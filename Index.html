@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Paragon SMP | Official Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Palette derived from the pixelated gold/orange PARAGON SMP logo */
+            --bg-dark: #0e0a05;
+            --top-nav-bg: #181108;
+            --sub-nav-bg: #22180a;
+            --accent-gold: #fbbf24;
+            --accent-gold-hover: #f59e0b;
+            --accent-gold-glow: rgba(251, 191, 36, 0.25);
+            --gold-gradient: linear-gradient(135deg, #ffe066 0%, #f59e0b 50%, #d97706 100%);
+            --discord-purple: #5865f2;
+            --text-light: #fffbeb;
+            --text-muted: #d97706;
+            --border-color: rgba(251, 191, 36, 0.2);
+            --card-bg: #1a1208;
+            --card-hover: #261b0c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            min-height: 100vh;
+        }
+
+        /* Mandatory Login Gate */
+        #loginGate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(14, 10, 5, 0.98);
+            backdrop-filter: blur(12px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-box {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 440px;
+            text-align: center;
+            box-shadow: 0 0 35px var(--accent-gold-glow);
+        }
+
+        .login-box img {
+            width: 100%;
+            max-width: 280px;
+            height: auto;
+            margin-bottom: 1.25rem;
+            object-fit: contain;
+        }
+
+        .login-box h2 {
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-box p {
+            color: #d1d5db;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .auth-providers {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .auth-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.85rem;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            background: rgba(255,255,255,0.03);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .auth-btn:hover {
+            background: rgba(251, 191, 36, 0.15);
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+        }
+
+        .auth-btn.ms { border-color: #00a4ef; color: #38bdf8; }
+        .auth-btn.github { border-color: #6e5494; color: #c8b6ff; }
+        .auth-btn.gemini { border-color: #a855f7; color: #d8b4fe; }
+        .auth-btn.google { border-color: #ea4335; color: #f87171; }
+
+        /* Top Bar */
+        .top-navbar {
+            background: var(--top-nav-bg);
+            color: var(--text-light);
+            padding: 0.85rem 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .top-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 800;
+            font-size: 1.25rem;
+            color: var(--accent-gold);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .top-brand img {
+            height: 36px;
+            object-fit: contain;
+        }
+
+        .top-nav-links {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .top-nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .top-nav-links a:hover {
+            color: var(--accent-gold);
+        }
+
+        .btn-gold-action {
+            background: var(--gold-gradient);
+            color: #000;
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .btn-gold-action:hover {
+            opacity: 0.9;
+        }
+
+        /* Secondary Sub-Navbar */
+        .sub-navbar {
+            background: var(--sub-nav-bg);
+            padding: 0 10%;
+            display: flex;
+            gap: 1.75rem;
+            border-bottom: 1px solid var(--border-color);
+            overflow-x: auto;
+        }
+
+        .sub-nav-link {
+            padding: 0.85rem 0;
+            color: #d1d5db;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            text-decoration: none;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .sub-nav-link:hover, .sub-nav-link.active {
+            color: var(--accent-gold);
+            border-bottom-color: var(--accent-gold);
+        }
+
+        /* Views Routing System */
+        .view-page {
+            display: none;
+        }
+
+        .view-page.active-view {
+            display: block;
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(90deg, rgba(14, 10, 5, 0.95) 30%, rgba(14, 10, 5, 0.75) 100%), 
+                        url('https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1600&q=80') center/cover;
+            padding: 4.5rem 10%;
+            min-height: 440px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero-tags-container {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-tag {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+            font-weight: 800;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.6rem;
+            border-radius: 4px;
+            width: fit-content;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .hero-logo-img {
+            max-width: 480px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .hero-desc {
+            color: #e5e7eb;
+            max-width: 540px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .online-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0,0,0,0.6);
+            border: 1px solid var(--border-color);
+            padding: 0.4rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+            margin-bottom: 1.25rem;
+            width: fit-content;
+        }
+
+        .dot-gold {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-gold);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-gold);
+        }
+
+        .btn-play {
+            background: var(--gold-gradient);
+            color: #000;
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding: 0.9rem 2rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            width: fit-content;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 20px var(--accent-gold-glow);
+        }
+
+        .btn-play:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(251, 191, 36, 0.4);
+        }
+
+        .discord-banner {
+            background: var(--discord-purple);
+            color: #fff;
+            padding: 0.75rem 1.25rem;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.85rem;
+            width: fit-content;
+        }
+
+        /* Community Section */
+        .content-section {
+            padding: 3.5rem 10%;
+        }
+
+        .section-heading {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            color: var(--accent-gold);
+        }
+
+        .section-heading::before {
+            content: '';
+            width: 4px;
+            height: 22px;
+            background: var(--accent-gold);
+            display: inline-block;
+            border-radius: 2px;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-gold);
+            background: var(--card-hover);
+        }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .card p {
+            color: #9ca3af;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        /* Staff Section Layout */
+        .staff-tier-group {
+            margin-bottom: 2.5rem;
+        }
+
+        .staff-tier-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .staff-tier-badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 800;
+            text-transform: capitalize;
+        }
+
+        .tier-badge-owner {
+            background: rgba(239, 68, 68, 0.2);
+            color: #f87171;
+            border: 1px solid #ef4444;
+        }
+
+        .tier-badge-dev {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--accent-gold);
+            border: 1px solid var(--accent-gold);
+        }
+
+        .tier-count {
+            font-size: 0.85rem;
+            color: #9ca3af;
+            font-weight: 600;
+        }
+
+        .staff-grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .staff-member-card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 0.85rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .staff-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Minecraft Head Skin Container */
+        .mc-skin-wrapper {
+            width: 56px;
+            height: 56px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #18181b;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #3f3f46;
+        }
+
+        .mc-skin-img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+            image-rendering: pixelated;
+        }
+
+        .staff-info-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .staff-username {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .staff-subtitle {
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .btn-profile {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-profile:hover {
+            background: #dbeafe;
+        }
+
+        /* Leaderboard Table Styles */
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .leaderboard-table th {
+            background: rgba(0,0,0,0.5);
+            color: var(--accent-gold);
+            text-align: left;
+            padding: 1rem;
+            font-weight: 800;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .leaderboard-table td {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+            color: #d1d5db;
+            font-weight: 600;
+        }
+
+        .leaderboard-table tr:hover {
+            background: var(--card-hover);
+        }
+
+        .rank-badge {
+            font-weight: 800;
+            color: #000;
+            background: var(--accent-gold);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Form Controls for Ticketing System */
+        .ticket-form {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 700px;
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: #fff;
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--accent-gold);
+        }
+
+        /* Staff Logs Modal (Up to 100 entries) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.88);
+            backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-box {
+            background: var(--card-bg);
+            border: 2px solid var(--accent-gold);
+            border-radius: 20px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 750px;
+            position: relative;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 0 30px var(--accent-gold-glow);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: none;
+            border: none;
+            color: #9ca3af;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .appeals-list {
+            margin-top: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .appeal-item {
+            background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .appeal-item.active {
+            border-color: var(--accent-gold);
+            background: rgba(251, 191, 36, 0.08);
+        }
+
+        .appeal-item.empty {
+            color: #6b7280;
+            border-style: dashed;
+            background: transparent;
+        }
+
+        .badge-type {
+            font-size: 0.7rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            margin-left: 6px;
+        }
+
+        .badge-ban { background: #ef4444; color: #fff; }
+        .badge-tech { background: #38bdf8; color: #000; }
+        .badge-bug { background: #10b981; color: #000; }
+    </style>
+</head>
+<body>
+
+    <!-- Mandatory Login Gate -->
+    <div id="loginGate">
+        <div class="login-box">
+            <img src="https://cdn.corenexis.com/f/ulELRAZZ8oI.png" alt="Paragon SMP Gold Logo">
+            <h2>Paragon SMP Portal</h2>
+            <p>Please authenticate with an account provider to access the network portal.</p>
+            
+            <input type="email" id="loginEmail" value="a_hipkins@outlook.com" style="width: 100%; background: rgba(0,0,0,0.5); border: 1px solid var(--border-color); border-radius: 10px; padding: 0.75rem; color: #fff; margin-bottom: 1rem; outline: none;">
+
+            <div class="auth-providers">
+                <button class="auth-btn ms" onclick="grantAccess('Microsoft')">
+                    Log in with Microsoft
+                </button>
+                <button class="auth-btn github" onclick="grantAccess('GitHub')">
+                    Log in with GitHub
+                </button>
+                <button class="auth-btn gemini" onclick="grantAccess('Google Gemini')">
+                    Log in with Google Gemini
+                </button>
+                <button class="auth-btn google" onclick="grantAccess('Google')">
+                    Log in with Google
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Portal Content -->
+    <div id="mainPortal" style="display: none;">
+        
+        <!-- Top Navigation -->
+        <div class="top-navbar">
+            <a onclick="switchView('overviewView')" class="top-brand">
+                <img src="https://cdn.corenexis.com/f/ulELRAZZ8oI.png" alt="Logo">
+                PARAGON SMP
+            </a>
+            <div class="top-nav-links">
+                <a onclick="switchView('overviewView')">Home</a>
+                <a onclick="switchView('overviewView')">Community</a>
+                <a onclick="switchView('leaderboardView')">Leaderboards</a>
+                <a onclick="switchView('ticketView')">Support</a>
+                <button class="btn-gold-action" onclick="grantAccess('Microsoft')">Sign in with Microsoft</button>
+            </div>
+        </div>
+
+        <!-- Sub Navigation Bar -->
+        <div class="sub-navbar">
+            <span class="sub-nav-link active" id="nav-overview" onclick="switchView('overviewView')">Overview</span>
+            <span class="sub-nav-link" id="nav-ticket" onclick="switchView('ticketView')">Submit Ticket / Appeal</span>
+            <span class="sub-nav-link" onclick="openModal('logModal')">Staff Logs (100)</span>
+            <span class="sub-nav-link" id="nav-leaderboard" onclick="switchView('leaderboardView')">Highest Kill Streak Leaderboard</span>
+            <span class="sub-nav-link" onclick="scrollToStaff()">Staff Directory</span>
+        </div>
+
+        <!-- VIEW 1: OVERVIEW PAGE -->
+        <div id="overviewView" class="view-page active-view">
+            <!-- Gold Theme Hero Banner -->
+            <div class="hero-banner">
+                <div class="hero-tags-container">
+                    <span class="hero-tag">FFA ARENA NETWORK</span>
+                    <span class="hero-tag">CUSTOM SCRIPTED SMP</span>
+                </div>
+                <img class="hero-logo-img" src="https://cdn.corenexis.com/f/ulELRAZZ8oI.png" alt="Paragon SMP Title Header">
+                <p class="hero-desc">The ultimate dual experience: Jump into fast-paced Free-For-All combat arenas or build and survive in our custom Skript-powered SMP engine!</p>
+                
+                <div class="online-badge">
+                    <span class="dot-gold"></span> 3,323 online
+                </div>
+
+                <button class="btn-play" onclick="copyServerIP()">
+                    ▶ Play Paragon SMP Now
+                </button>
+
+                <a href="https://discord.gg/ax7my59p2" class="discord-banner" target="_blank">
+                    Join Discord — get a FREE Starter Bundle
+                </a>
+            </div>
+
+            <!-- Community Section -->
+            <div class="content-section">
+                <div class="section-heading">Network Modes & Features</div>
+                <div class="grid-cards">
+                    <div class="card" onclick="switchView('leaderboardView')">
+                        <h3>Highest Kill Streak Leaderboard</h3>
+                        <p>Track top FFA fighters and view the dominant players holding the record kill streaks in competitive PvP.</p>
+                    </div>
+                    <div class="card" onclick="switchView('ticketView')">
+                        <h3>Support & Ticket Center</h3>
+                        <p>Submit Ban Appeals, Technical Support tickets, or Bug Reports directly to our management staff.</p>
+                    </div>
+                    <div class="card" onclick="openModal('logModal')">
+                        <h3>Staff Logs (100 Entries)</h3>
+                        <p>Access the live 100-slot staff appeal and ticket tracker to monitor active responses in real time.</p>
+                    </div>
+                </div>
+
+                <!-- Network Staff Cards using Direct Username MC-Heads Skin Renderers -->
+                <div class="section-heading" id="staffSection" style="margin-top: 3.5rem;">Network Staff</div>
+                
+                <!-- Tier: Owner -->
+                <div class="staff-tier-group">
+                    <div class="staff-tier-header">
+                        <span class="staff-tier-badge tier-badge-owner">Owner</span>
+                        <span class="tier-count">1 member</span>
+                    </div>
+                    <div class="staff-grid-cards">
+                        <div class="staff-member-card">
+                            <div class="staff-left">
+                                <div class="mc-skin-wrapper">
+                                    <img class="mc-skin-img" src="https://mc-heads.net/avatar/ITZREALHARRY/64" alt="ITZREALHARRY Skin" onerror="this.src='https://mc-heads.net/avatar/MHF_Steve/64'">
+                                </div>
+                                <div class="staff-info-text">
+                                    <span class="staff-username">ITZREALHARRY</span>
+                                    <span class="staff-subtitle">Network Owner</span>
+                                </div>
+                            </div>
+                            <button class="btn-profile">View Profile</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tier: Developer -->
+                <div class="staff-tier-group">
+                    <div class="staff-tier-header">
+                        <span class="staff-tier-badge tier-badge-dev">Developer</span>
+                        <span class="tier-count">1 member</span>
+                    </div>
+                    <div class="staff-grid-cards">
+                        <div class="staff-member-card">
+                            <div class="staff-left">
+                                <div class="mc-skin-wrapper">
+                                    <img class="mc-skin-img" src="https://mc-heads.net/avatar/Nuvulit/64" alt="Nuvulit Skin" onerror="this.src='https://mc-heads.net/avatar/MHF_Steve/64'">
+                                </div>
+                                <div class="staff-info-text">
+                                    <span class="staff-username">Nuvulit</span>
+                                    <span class="staff-subtitle">Lead Developer & Systems Architect</span>
+                                </div>
+                            </div>
+                            <button class="btn-profile">View Profile</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- VIEW 2: LEADERBOARD PAGE -->
+        <div id="leaderboardView" class="view-page">
+            <div class="content-section">
+                <div class="section-heading">Highest Kill Streak Leaderboard (FFA PvP)</div>
+                <p style="color: #9ca3af; margin-bottom: 2rem;">Real-time ranking of players with the most consecutive kills without dying in the FFA combat arena.</p>
+
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Player IGN</th>
+                            <th>Highest Kill Streak</th>
+                            <th>Total FFA Kills</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="rank-badge">#1</span></td>
+                            <td style="color: #fff; font-weight: 800;">V0RT6X</td>
+                            <td style="color: var(--accent-gold); font-size: 1.1rem; font-weight: 800;">87 Kills</td>
+                            <td>3,410</td>
+                            <td><span style="color: #10b981; font-size: 0.8rem; font-weight: 800;">ONLINE</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge" style="background: #e2e8f0;">#2</span></td>
+                            <td style="color: #fff; font-weight: 800;">Nuvulit</td>
+                            <td style="color: var(--accent-gold); font-size: 1.1rem; font-weight: 800;">64 Kills</td>
+                            <td>2,890</td>
+                            <td><span style="color: #10b981; font-size: 0.8rem; font-weight: 800;">ONLINE</span></td>
+                        </tr>
+                        <tr>
+                            <td><span class="rank-badge" style="background: #b45309; color: #fff;">#3</span></td>
+                            <td style="color: #fff; font-weight: 800;">ZenithTG</td>
+                            <td style="color: var(--accent-gold); font-size: 1.1rem; font-weight: 800;">51 Kills</td>
+                            <td>2,150</td>
+                            <td><span style="color: #6b7280; font-size: 0.8rem; font-weight: 800;">OFFLINE</span></td>
+                        </tr>
+                        <tr>
+                            <td>#4</td>
+                            <td style="color: #fff; font-weight: 800;">ITZREALHARRY</td>
+                            <td style="color: var(--accent-gold); font-weight: 800;">43 Kills</td>
+                            <td>1,940</td>
+                            <td><span style="color: #10b981; font-size: 0.8rem; font-weight: 800;">ONLINE</span></td>
+                        </tr>
+                        <tr>
+                            <td>#5</td>
+                            <td style="color: #fff; font-weight: 800;">Shadow_PvP</td>
+                            <td style="color: var(--accent-gold); font-weight: 800;">38 Kills</td>
+                            <td>1,420</td>
+                            <td><span style="color: #6b7280; font-size: 0.8rem; font-weight: 800;">OFFLINE</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- VIEW 3: SEPARATE TICKET & APPEAL PAGE -->
+        <div id="ticketView" class="view-page">
+            <div class="content-section">
+                <div class="section-heading">Support Ticket & Ban Appeal Portal</div>
+                <p style="color: #9ca3af; margin-bottom: 2rem;">Select the appropriate category below to submit an inquiry directly to staff.</p>
+
+                <div class="ticket-form">
+                    <div class="form-group">
+                        <label for="ticketCategory">Select Submission Category</label>
+                        <select id="ticketCategory" class="form-control" onchange="updateTicketFields()">
+                            <option value="Ban Appeal">Ban Appeal</option>
+                            <option value="Technical Support">Technical Support</option>
+                            <option value="Bug Report">Bug Report</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ticketUser">Minecraft Username</label>
+                        <input type="text" id="ticketUser" class="form-control" placeholder="e.g. Nuvulit">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="ticketDiscord">Discord Tag</label>
+                        <input type="text" id="ticketDiscord" class="form-control" placeholder="e.g. user_tag">
+                    </div>
+
+                    <div class="form-group">
+                        <label id="detailsLabel" for="ticketDetails">Reason for Appeal / Unban Context</label>
+                        <textarea id="ticketDetails" class="form-control" style="height: 120px;" placeholder="Explain your situation in detail..."></textarea>
+                    </div>
+
+                    <button class="btn-play" style="width: 100%; justify-content: center;" onclick="submitTicketLive()">Submit Request</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal: 100-Slot Staff Logs -->
+    <div class="modal-overlay" id="logModal">
+        <div class="modal-box">
+            <button class="modal-close" onclick="closeModal('logModal')">&times;</button>
+            <h2 style="color: var(--accent-gold); margin-bottom: 0.5rem;">Staff Ticket & Appeal Logs (100 Slots)</h2>
+            <p style="color: #9ca3af; font-size: 0.85rem; margin-bottom: 1rem;">Live updates for the 100 network log slots:</p>
+            <div class="appeals-list" id="appealsContainer">
+                <!-- 100 slots populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function grantAccess(provider) {
+            const email = document.getElementById('loginEmail').value.trim();
+            if (!email) return alert('Please enter your email.');
+            
+            document.getElementById('loginGate').style.display = 'none';
+            document.getElementById('mainPortal').style.display = 'block';
+        }
+
+        function copyServerIP() {
+            const ipText = "paragon.mc-server.net";
+            navigator.clipboard.writeText(ipText).then(() => {
+                alert("Server IP Copied: paragon.mc-server.net");
+            });
+        }
+
+        function switchView(viewId) {
+            const pages = document.querySelectorAll('.view-page');
+            pages.forEach(p => p.classList.remove('active-view'));
+
+            const target = document.getElementById(viewId);
+            if (target) target.classList.add('active-view');
+
+            const links = document.querySelectorAll('.sub-nav-link');
+            links.forEach(l => l.classList.remove('active'));
+
+            if (viewId === 'overviewView') document.getElementById('nav-overview').classList.add('active');
+            if (viewId === 'leaderboardView') document.getElementById('nav-leaderboard').classList.add('active');
+            if (viewId === 'ticketView') document.getElementById('nav-ticket').classList.add('active');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openModal(id) {
+            document.getElementById(id).style.display = "flex";
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).style.display = "none";
+        }
+
+        function scrollToStaff() {
+            switchView('overviewView');
+            setTimeout(() => {
+                document.getElementById('staffSection').scrollIntoView({ behavior: 'smooth' });
+            }, 100);
+        }
+
+        function updateTicketFields() {
+            const cat = document.getElementById('ticketCategory').value;
+            const label = document.getElementById('detailsLabel');
+            if (cat === 'Ban Appeal') {
+                label.innerText = 'Reason for Appeal / Unban Context';
+            } else if (cat === 'Technical Support') {
+                label.innerText = 'Describe the Technical Issue / Connection Problem';
+            } else {
+                label.innerText = 'Steps to Reproduce Bug / Description';
+            }
+        }
+
+        // Live Log Storage (100 slots)
+        let appealLogs = Array(100).fill(null);
+
+        function renderAppeals() {
+            const container = document.getElementById('appealsContainer');
+            container.innerHTML = '';
+
+            appealLogs.forEach((item, index) => {
+                const slot = document.createElement('div');
+                const slotNum = index + 1 < 10 ? '00' + (index + 1) : (index + 1 < 100 ? '0' + (index + 1) : index + 1);
+
+                if (item) {
+                    slot.className = 'appeal-item active';
+                    let badgeClass = 'badge-ban';
+                    if (item.type === 'Technical Support') badgeClass = 'badge-tech';
+                    if (item.type === 'Bug Report') badgeClass = 'badge-bug';
+
+                    slot.innerHTML = `<span>#${slotNum} - <strong>${item.user}</strong> (${item.reason}) <span class="badge-type ${badgeClass}">${item.type}</span></span> <span style="color:var(--accent-gold); font-weight:bold;">SUBMITTED</span>`;
+                } else {
+                    slot.className = 'appeal-item empty';
+                    slot.innerHTML = `<span>Entry #${slotNum} - [ Empty Log Slot ]</span> <span style="color:#6b7280;">UNASSIGNED</span>`;
+                }
+                container.appendChild(slot);
+            });
+        }
+
+        function submitTicketLive() {
+            const user = document.getElementById('ticketUser').value.trim();
+            const details = document.getElementById('ticketDetails').value.trim();
+            const cat = document.getElementById('ticketCategory').value;
+
+            if (!user || !details) return alert('Please fill in all fields.');
+
+            appealLogs.unshift({ 
+                user: user, 
+                reason: details.substring(0, 25) + '...',
+                type: cat 
+            });
+            appealLogs.pop(); // Maintain 100 max
+
+            renderAppeals();
+
+            alert(`${cat} submitted successfully! It has been logged in the 100-slot Staff Logs.`);
+            document.getElementById('ticketUser').value = '';
+            document.getElementById('ticketDiscord').value = '';
+            document.getElementById('ticketDetails').value = '';
+            
+            openModal('logModal');
+        }
+
+        // Initialize 100 empty slots
+        renderAppeals();
+    </script>
+</body>
+</html>
